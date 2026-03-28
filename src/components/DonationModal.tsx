@@ -29,17 +29,8 @@ export function DonationModal() {
     })
     setLoading(false)
 
-    if (res.success) {
-      setOpen(false)
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      })
-      // Reset form
-      setAmount('')
-      setName('')
-      setMessage('')
+    if (res.success && res.payment) {
+      window.location.href = res.payment.checkout_url
     } else {
       alert("Gagal mengirim dukungan: " + res.error)
     }

@@ -14,6 +14,7 @@ type Donation = {
   amount: number
   message: string
   created_at: string
+  status?: string
 }
 
 export function LandingClient({ 
@@ -57,19 +58,23 @@ export function LandingClient({
     const randomIndex = Math.floor(Math.random() * MESSAGES.length)
     setRandomMessage(MESSAGES[randomIndex])
 
-    // Realtime subscription for MVP
+    // Realtime subscription for TriPay updates
     const channel = supabase.channel('realtime:donations')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'donations' }, payload => {
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'donations' }, payload => {
         const newDonation = payload.new as Donation
+        const oldDonation = payload.old as Donation
         
-        // Update Feed
-        setDonations(prev => [newDonation, ...prev].slice(0, 10))
-        
-        // Update Stats optimistically
-        setStats(prev => ({
-          count: prev.count + 1,
-          totalAmount: prev.totalAmount + Number(newDonation.amount)
-        }))
+        // Only trigger update when status changes to PAID
+        if (newDonation.status === 'PAID' && oldDonation.status !== 'PAID') {
+          // Update Feed
+          setDonations(prev => [newDonation, ...prev].slice(0, 10))
+          
+          // Update Stats optimistically
+          setStats(prev => ({
+            count: prev.count + 1,
+            totalAmount: prev.totalAmount + Number(newDonation.amount)
+          }))
+        }
       })
       .subscribe()
 
