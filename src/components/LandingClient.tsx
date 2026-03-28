@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { DonationModal } from './DonationModal'
-import { Coffee, User } from 'lucide-react'
+import { Coffee, User, ShieldCheck } from 'lucide-react'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import confetti from 'canvas-confetti'
 
 // Replace Material UI Verified Icon with lucide check-circle-2
 import { CheckCircle2 } from 'lucide-react'
@@ -19,10 +21,12 @@ type Donation = {
 
 export function LandingClient({ 
   initialStats, 
-  initialDonations 
+  initialDonations,
+  initialThankYou = false
 }: { 
   initialStats: { count: number, totalAmount: number },
-  initialDonations: Donation[] 
+  initialDonations: Donation[],
+  initialThankYou?: boolean
 }) {
   const MESSAGES = [
     "Dukung karya ini dengan secangkir kopi favoritmu ☕",
@@ -52,6 +56,21 @@ export function LandingClient({
   const [stats, setStats] = useState(initialStats)
   const [donations, setDonations] = useState(initialDonations)
   const [randomMessage, setRandomMessage] = useState(MESSAGES[0])
+  const [showThankYou, setShowThankYou] = useState(initialThankYou)
+
+  useEffect(() => {
+    if (showThankYou) {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 }
+      })
+      const timer = setTimeout(() => {
+        setShowThankYou(false)
+      }, 10000)
+      return () => clearTimeout(timer)
+    }
+  }, [showThankYou])
 
   useEffect(() => {
     // Pick random message on client mount to avoid hydration mismatch
@@ -195,6 +214,23 @@ export function LandingClient({
           <a href="https://kelaswfa.my.id/contact-us/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Me</a>
         </div>
       </footer>
+
+      {/* Thank You Modal */}
+      <Dialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <DialogContent className="max-w-[400px] p-0 bg-surface-container-lowest border-none shadow-2xl rounded-3xl overflow-hidden">
+          <div className="px-8 py-10 flex flex-col items-center gap-5 text-center bg-gradient-to-b from-secondary-container/30 to-transparent">
+            <div className="w-20 h-20 rounded-full bg-secondary text-white flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] -top-4 relative">
+              <ShieldCheck className="w-10 h-10" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="font-heading text-3xl font-extrabold text-primary">Terima Kasih!</h3>
+              <p className="text-on-surface-variant text-base leading-relaxed font-medium">
+                Dukunganmu sangat berarti! Terima kasih telah memberikan <span className="font-bold text-primary">caffeine boost</span> ekstra.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
