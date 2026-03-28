@@ -59,10 +59,17 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 ### Deploy to EasyPanel (VPS)
 1. Push your code to a GitHub repository.
 2. In **EasyPanel**, create a new **App** service.
-3. Connect your GitHub repository.
-4. Set **Root Directory** to `web`.
-5. Add the **Environment Variables** in the **Env** tab.
-6. Click **Deploy**! 🐳
+3. Connect your GitHub repository (e.g., `lowfatgeek/traktir-solo-creator`).
+4. Set **Build Path** to `/` (if the Dockerfile is in a subfolder, point to it) or accordingly.
+5. In the **Build** section, select **Dockerfile**.
+6. In the **Env** tab, add the environment variables **WITHOUT quotes**:
+   ```text
+   NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxx
+   ADMIN_EMAIL=admin@example.com
+   ```
+7. Set the **Destination Port** to `3000` (or `80` if mapped by EasyPanel).
+8. Klik **Deploy**! 🐳
 
 ## 📝 Project Structure
 - `/src/app`: Routing and page components.
