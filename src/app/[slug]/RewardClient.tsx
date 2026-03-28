@@ -63,7 +63,7 @@ export function RewardClient({
     setLoading(false)
 
     if (res.success && res.payment) {
-      setPayment(res.payment)
+      window.location.href = res.payment.checkout_url
     } else {
       alert("Gagal mengirim dukungan: " + res.error)
     }

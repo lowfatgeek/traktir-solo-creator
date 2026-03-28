@@ -43,7 +43,8 @@ export async function submitDonation(data: { name: string; amount: number; messa
       merchant_ref: merchantRef,
       amount: data.amount,
       customer_name: data.name || 'Anonim',
-      customer_email: 'customer@example.com', // Placeholder
+      customer_email: 'customer@example.com', 
+      return_url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}`, // Will be handled by the client if empty
       order_items: [
         {
           name: 'Donasi Traktir',
@@ -62,6 +63,7 @@ export async function submitDonation(data: { name: string; amount: number; messa
         reference: tripayResponse.reference,
         payment_method: 'QRIS',
         qr_url: tripayResponse.qr_url,
+        payment_url: tripayResponse.checkout_url,
         status: 'PENDING',
       },
     ]).select().single()
@@ -75,11 +77,8 @@ export async function submitDonation(data: { name: string; amount: number; messa
       success: true, 
       payment: {
         id: donation.id,
-        reference: tripayResponse.reference,
+        checkout_url: tripayResponse.checkout_url,
         merchant_ref: merchantRef,
-        qr_url: tripayResponse.qr_url,
-        amount: tripayResponse.amount,
-        expiry: tripayResponse.expired_time,
       } 
     }
   } catch (error: any) {
@@ -95,6 +94,7 @@ export async function getDonationStats() {
   const { count, error: countError } = await supabase
     .from('donations')
     .select('*', { count: 'exact', head: true })
+    .eq('status', 'PAID')
     
   if (countError) {
     console.error('Error fetching donation count:', countError)
@@ -105,6 +105,7 @@ export async function getDonationStats() {
   const { data, error: amountError } = await supabase
     .from('donations')
     .select('amount')
+    .eq('status', 'PAID')
 
   if (amountError) {
     console.error('Error fetching donation amounts:', amountError)
@@ -121,6 +122,7 @@ export async function getRecentDonations(limit = 10) {
   const { data, error } = await supabase
     .from('donations')
     .select('*')
+    .eq('status', 'PAID')
     .order('created_at', { ascending: false })
     .limit(limit)
 
