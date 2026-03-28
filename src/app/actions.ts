@@ -32,7 +32,7 @@ async function createClient() {
 
 // === Donations ===
 
-export async function submitDonation(data: { name: string; amount: number; message: string }) {
+export async function submitDonation(data: { name: string; amount: number; message: string; returnUrl?: string }) {
   const supabase = await createClient()
   
   const merchantRef = `TRK-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
@@ -44,7 +44,7 @@ export async function submitDonation(data: { name: string; amount: number; messa
       amount: data.amount,
       customer_name: data.name || 'Anonim',
       customer_email: 'customer@example.com', 
-      return_url: `${process.env.NEXT_PUBLIC_SITE_URL || ''}`, // Will be handled by the client if empty
+      return_url: data.returnUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://traktir.kelaswfa.my.id',
       order_items: [
         {
           name: 'Donasi Traktir',

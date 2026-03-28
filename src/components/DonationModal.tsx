@@ -25,7 +25,8 @@ export function DonationModal() {
     const res = await submitDonation({ 
       name, 
       amount: Number(amount), 
-      message 
+      message,
+      returnUrl: window.location.href 
     })
     setLoading(false)
 

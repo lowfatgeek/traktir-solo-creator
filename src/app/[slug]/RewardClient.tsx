@@ -58,7 +58,8 @@ export function RewardClient({
     const res = await submitDonation({ 
       name, 
       amount: Number(amount), 
-      message: `${message} (Reward: ${pageData.title})`
+      message: `${message} (Reward: ${pageData.title})`,
+      returnUrl: window.location.href
     })
     setLoading(false)
 
