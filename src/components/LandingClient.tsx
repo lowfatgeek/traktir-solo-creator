@@ -6,6 +6,7 @@ import { DonationModal } from './DonationModal'
 import { Coffee, User, ShieldCheck } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import confetti from 'canvas-confetti'
+import Link from 'next/link'
 
 // Replace Material UI Verified Icon with lucide check-circle-2
 import { CheckCircle2 } from 'lucide-react'
@@ -207,11 +208,11 @@ export function LandingClient({
 
       <footer className="w-full pb-12 pt-8 flex flex-col items-center justify-center border-t border-outline-variant/20 mt-auto">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-on-surface-variant/80">
-          <a href="https://member.kelaswfa.my.id/privacy-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Privacy Policy</a>
+          <Link href="/kebijakan-privasi" className="hover:text-primary transition-colors">Privacy Policy</Link>
           <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
-          <a href="https://member.kelaswfa.my.id/syarat-ketentuan/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Terms of Service</a>
+          <Link href="/kebijakan-layanan" className="hover:text-primary transition-colors">Terms of Service</Link>
           <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
-          <a href="https://kelaswfa.my.id/contact-us/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Me</a>
+          <Link href="/hubungi-kami" className="hover:text-primary transition-colors">Contact Me</Link>
         </div>
       </footer>
 
