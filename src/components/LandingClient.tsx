@@ -207,12 +207,12 @@ export function LandingClient({
       </section>
 
       <footer className="w-full pb-12 pt-8 flex flex-col items-center justify-center border-t border-outline-variant/20 mt-auto">
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-on-surface-variant/80">
-          <Link href="/kebijakan-privasi" className="hover:text-primary transition-colors">Privacy Policy</Link>
-          <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
-          <Link href="/kebijakan-layanan" className="hover:text-primary transition-colors">Terms of Service</Link>
-          <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
-          <Link href="/hubungi-kami" className="hover:text-primary transition-colors">Contact Me</Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-4 text-sm font-medium text-on-surface-variant/80">
+          <Link href="/kebijakan-privasi" className="hover:text-primary transition-colors text-center">Privacy Policy</Link>
+          <div className="hidden sm:block w-1 h-1 rounded-full bg-outline-variant/40"></div>
+          <Link href="/kebijakan-layanan" className="hover:text-primary transition-colors text-center">Terms of Service</Link>
+          <div className="hidden sm:block w-1 h-1 rounded-full bg-outline-variant/40"></div>
+          <Link href="/hubungi-kami" className="hover:text-primary transition-colors text-center">Contact Me</Link>
         </div>
       </footer>
 
