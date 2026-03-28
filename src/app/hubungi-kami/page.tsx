@@ -7,10 +7,12 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="relative flex flex-col items-center justify-center bg-background text-on-background font-body antialiased min-h-screen p-6 md:p-12 overflow-x-hidden">
+    <main className="relative flex flex-col items-center justify-center bg-background text-on-background font-body antialiased min-h-screen p-6 md:p-12">
       {/* Decorative Ambient Orbs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-secondary-container opacity-20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary-fixed opacity-10 blur-[100px] rounded-full translate-x-1/4 translate-y-1/4"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-secondary-container opacity-20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary-fixed opacity-10 blur-[100px] rounded-full translate-x-1/4 translate-y-1/4"></div>
+      </div>
       
       <div className="relative z-10 w-full max-w-[800px] flex flex-col gap-16 items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
           
