@@ -151,7 +151,7 @@ export function RewardClient({
              </div>
              <h1 className="text-4xl md:text-6xl font-heading font-extrabold tracking-tight text-primary mb-6">Terima Kasih!</h1>
              <p className="text-on-surface-variant max-w-xl mx-auto text-lg leading-relaxed font-medium">
-                 Dukunganmu sangat berarti. Terima kasih telah memberikan <span className="font-bold text-primary">caffeine boost</span> ekstra untuk terus mendukung karya ini.
+                 Atas traktiran <span className="font-bold text-primary">caffeine boost</span> ekstra untuk terus mendukung saya tetap berkarya.
              </p>
            </div>
            
@@ -169,7 +169,7 @@ export function RewardClient({
                  <div className="w-full text-left flex flex-col justify-center">
                     <h2 className="text-2xl md:text-3xl font-heading font-bold text-primary mb-4">{pageData.title}</h2>
                     <p className="text-on-surface-variant mb-8 leading-relaxed font-medium">
-                       Sebagai tanda apresiasi, kami telah menyiapkan halaman khusus untukmu. Buka tautan di bawah ini untuk mengambil reward kamu!
+                       Sebagai tanda apresiasi, saya telah siapkan bonus spesial untukmu. Buka tautan di bawah ini untuk mengambil reward kamu!
                     </p>
                     <button onClick={handleDownload} className="inline-flex items-center justify-center w-full px-8 py-5 bg-secondary text-on-secondary text-lg font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-secondary/20 hover:shadow-secondary/40">
                        <Download className="mr-3 w-6 h-6" />
