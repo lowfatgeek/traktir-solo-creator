@@ -5,6 +5,8 @@ import { submitDonation } from '@/app/actions'
 import { Coffee, ArrowRight, ShieldCheck, Loader2, Download, User } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import confetti from 'canvas-confetti'
+import { supabase } from '@/lib/supabase'
+import { useEffect } from 'react'
 
 type Donation = {
   id: string
@@ -36,6 +38,13 @@ export function RewardClient({
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [unlocked, setUnlocked] = useState(false)
+  const [payment, setPayment] = useState<{
+    id: string;
+    qr_url: string;
+    reference: string;
+    amount: number;
+    expiry: number;
+  } | null>(null)
   
   const presetAmounts = [10000, 25000, 50000, 100000]
 
@@ -53,7 +62,9 @@ export function RewardClient({
     })
     setLoading(false)
 
-    if (res.success) {
+    if (res.success && res.payment) {
+      setPayment(res.payment)
+    } else if (res.success) {
       confetti({
         particleCount: 150,
         spread: 80,
@@ -64,6 +75,39 @@ export function RewardClient({
       alert("Gagal mengirim dukungan: " + res.error)
     }
   }
+
+  // Monitor payment status with Supabase Realtime
+  useEffect(() => {
+    if (!payment?.id || unlocked) return
+
+    const channel = supabase
+      .channel(`donation_${payment.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'donations',
+          filter: `id=eq.${payment.id}`
+        },
+        (payload) => {
+          if (payload.new.status === 'PAID') {
+            confetti({
+              particleCount: 150,
+              spread: 80,
+              origin: { y: 0.6 }
+            })
+            setUnlocked(true)
+            setPayment(null)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [payment?.id, unlocked])
 
   const handleDownload = () => {
     window.open(pageData.reward_url, '_blank')
@@ -144,13 +188,49 @@ export function RewardClient({
                   Buka Link Reward
                 </button>
               </div>
+            ) : payment ? (
+              <div className="px-8 py-8 flex flex-col items-center gap-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="space-y-1">
+                  <h3 className="font-heading text-xl font-extrabold text-primary">Selesaikan Pembayaran</h3>
+                  <p className="text-on-surface-variant text-xs font-medium">Scan kode QRIS di bawah ini untuk membayar {formatIDR(payment.amount)}</p>
+                </div>
+                
+                <div className="bg-white p-4 rounded-2xl border-4 border-primary/10 shadow-inner">
+                  <img src={payment.qr_url} alt="QRIS Code" className="w-64 h-64 grayscale-0" />
+                </div>
+
+                <div className="w-full space-y-3">
+                  <div className="flex items-center justify-between text-xs font-bold text-on-surface-variant px-1">
+                    <span>STATUS</span>
+                    <span className="flex items-center gap-1.5 text-secondary">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Menunggu Pembayaran
+                    </span>
+                  </div>
+                  <div className="p-3 bg-surface-container-low rounded-xl text-left">
+                    <p className="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">ID Transaksi</p>
+                    <p className="text-sm font-mono font-bold text-primary break-all">{payment.reference}</p>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-on-surface-variant font-medium">
+                  Halaman ini akan otomatis diperbarui setelah pembayaran terdeteksi.
+                </p>
+                
+                <button 
+                  onClick={() => setPayment(null)}
+                  className="text-xs font-bold text-outline hover:text-primary transition-colors"
+                >
+                  Ganti Metode atau Nominal
+                </button>
+              </div>
             ) : (
               <div className="px-8 py-6 space-y-4">
                 <div className="flex flex-col items-center gap-1 mb-2">
                   <h3 className="font-heading text-xl font-bold text-primary text-center">Checkout Reward</h3>
                   <p className="text-xs text-on-surface-variant font-medium">{pageData.title}</p>
                 </div>
-
+                
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-[11px] font-bold text-on-surface-variant/80 uppercase tracking-wider px-1">Nama</label>
@@ -206,7 +286,7 @@ export function RewardClient({
                     className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-extrabold text-lg shadow-xl shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                    Traktir Sekarang
+                    Bayar via QRIS
                   </button>
                 </div>
               </div>

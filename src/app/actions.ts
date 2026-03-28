@@ -2,6 +2,8 @@
 
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { createTriPayTransaction } from '@/lib/tripay'
+import crypto from 'crypto'
 
 async function createClient() {
   const cookieStore = await cookies()
@@ -32,18 +34,58 @@ async function createClient() {
 
 export async function submitDonation(data: { name: string; amount: number; message: string }) {
   const supabase = await createClient()
-  const { error } = await supabase.from('donations').insert([
-    {
-      name: data.name || 'Anonim',
+  
+  const merchantRef = `TRK-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+  
+  try {
+    const tripayResponse = await createTriPayTransaction({
+      method: 'QRIS',
+      merchant_ref: merchantRef,
       amount: data.amount,
-      message: data.message,
-    },
-  ])
-  if (error) {
-    console.error('Error submitting donation:', error)
-    return { success: false, error: error.message }
+      customer_name: data.name || 'Anonim',
+      customer_email: 'customer@example.com', // Placeholder
+      order_items: [
+        {
+          name: 'Donasi Traktir',
+          price: data.amount,
+          quantity: 1,
+        }
+      ]
+    });
+
+    const { data: donation, error } = await supabase.from('donations').insert([
+      {
+        name: data.name || 'Anonim',
+        amount: data.amount,
+        message: data.message,
+        merchant_ref: merchantRef,
+        reference: tripayResponse.reference,
+        payment_method: 'QRIS',
+        qr_url: tripayResponse.qr_url,
+        status: 'PENDING',
+      },
+    ]).select().single()
+
+    if (error) {
+      console.error('Error submitting donation:', error)
+      return { success: false, error: error.message }
+    }
+
+    return { 
+      success: true, 
+      payment: {
+        id: donation.id,
+        reference: tripayResponse.reference,
+        merchant_ref: merchantRef,
+        qr_url: tripayResponse.qr_url,
+        amount: tripayResponse.amount,
+        expiry: tripayResponse.expired_time,
+      } 
+    }
+  } catch (error: any) {
+    console.error('TriPay Error:', error);
+    return { success: false, error: error.message };
   }
-  return { success: true }
 }
 
 export async function getDonationStats() {

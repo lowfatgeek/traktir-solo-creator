@@ -6,6 +6,12 @@ CREATE TABLE IF NOT EXISTS public.donations (
     name TEXT NOT NULL DEFAULT 'Anonim',
     amount NUMERIC NOT NULL,
     message TEXT,
+    status TEXT NOT NULL DEFAULT 'PENDING',
+    merchant_ref TEXT,
+    reference TEXT,
+    payment_method TEXT,
+    payment_url TEXT,
+    qr_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
