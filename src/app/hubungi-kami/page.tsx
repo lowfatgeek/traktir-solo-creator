@@ -7,14 +7,12 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="bg-background text-on-background font-body antialiased min-h-screen">
-      <div className="relative flex w-full flex-col items-center justify-center p-6 md:p-12 overflow-x-hidden min-h-screen">
-        
-        {/* Decorative Ambient Orbs */}
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-secondary-container opacity-20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary-fixed opacity-10 blur-[100px] rounded-full translate-x-1/4 translate-y-1/4"></div>
-        
-        <div className="relative z-10 w-full max-w-[800px] flex flex-col gap-16 items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <main className="relative flex flex-col items-center justify-center bg-background text-on-background font-body antialiased min-h-screen p-6 md:p-12 overflow-x-hidden">
+      {/* Decorative Ambient Orbs */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-secondary-container opacity-20 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary-fixed opacity-10 blur-[100px] rounded-full translate-x-1/4 translate-y-1/4"></div>
+      
+      <div className="relative z-10 w-full max-w-[800px] flex flex-col gap-16 items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
           
           <div className="text-center space-y-4 pt-10">
             <div className="inline-flex items-center justify-center p-4 mb-4 rounded-2xl bg-surface-container-low">
@@ -86,7 +84,6 @@ export default function ContactPage() {
           </div>
 
         </div>
-      </div>
     </main>
   )
 }
