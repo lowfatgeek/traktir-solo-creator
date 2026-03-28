@@ -64,13 +64,6 @@ export function RewardClient({
 
     if (res.success && res.payment) {
       setPayment(res.payment)
-    } else if (res.success) {
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 }
-      })
-      setUnlocked(true)
     } else {
       alert("Gagal mengirim dukungan: " + res.error)
     }
