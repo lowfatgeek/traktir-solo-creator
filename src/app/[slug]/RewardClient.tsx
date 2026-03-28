@@ -48,7 +48,7 @@ export function RewardClient({
     expiry: number;
   } | null>(null)
   
-  const presetAmounts = [10000, 25000, 50000, 100000]
+  const presetAmounts = [5000, 10000, 25000, 50000]
 
   const handleDonate = async () => {
     if (!amount || amount < 1000) {
