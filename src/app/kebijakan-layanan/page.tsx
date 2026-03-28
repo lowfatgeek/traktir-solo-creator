@@ -84,10 +84,13 @@ export default function TermsOfServicePage() {
               <p className="text-lg font-medium leading-relaxed max-w-2xl mx-auto text-primary-fixed-dim">
                 Dengan menekan tombol bayar atau menyelesaikan transaksi di yuktraktir.com, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh isi Kebijakan Layanan ini.
               </p>
-              <div className="pt-6">
-                <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors font-bold text-white">
+              <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors font-bold text-white w-full sm:w-auto">
                   <ArrowLeft className="w-5 h-5" />
                   Kembali ke Beranda
+                </Link>
+                <Link href="/hubungi-kami" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary/90 transition-colors font-bold text-white w-full sm:w-auto">
+                  Hubungi Kami
                 </Link>
               </div>
             </div>

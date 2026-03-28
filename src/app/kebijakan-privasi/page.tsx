@@ -116,9 +116,12 @@ export default function PrivacyPolicyPage() {
           </div>
         </section>
 
-        <div className="pt-12 flex justify-center">
-          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-primary bg-primary-container/5 hover:bg-primary-container/10 transition-colors">
+        <div className="pt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link href="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-primary bg-primary-container/5 hover:bg-primary-container/10 transition-colors w-full sm:w-auto">
             Kembali ke Beranda
+          </Link>
+          <Link href="/hubungi-kami" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-secondary bg-secondary-container/30 hover:bg-secondary-container/50 transition-colors w-full sm:w-auto">
+            Hubungi Kami
           </Link>
         </div>
 
