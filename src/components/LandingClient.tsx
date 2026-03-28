@@ -185,6 +185,16 @@ export function LandingClient({
           )}
         </div>
       </section>
+
+      <footer className="w-full pb-12 pt-8 flex flex-col items-center justify-center border-t border-outline-variant/20 mt-auto">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-on-surface-variant/80">
+          <a href="https://member.kelaswfa.my.id/privacy-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Privacy Policy</a>
+          <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
+          <a href="https://member.kelaswfa.my.id/syarat-ketentuan/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Terms of Service</a>
+          <div className="w-1 h-1 rounded-full bg-outline-variant/40"></div>
+          <a href="https://kelaswfa.my.id/contact-us/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Me</a>
+        </div>
+      </footer>
     </>
   )
 }
