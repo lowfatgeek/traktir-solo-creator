@@ -56,6 +56,14 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 3. Add the **Environment Variables** (from step 2) in the Vercel project settings.
 4. Deploy! 🚀
 
+### Deploy to EasyPanel (VPS)
+1. Push your code to a GitHub repository.
+2. In **EasyPanel**, create a new **App** service.
+3. Connect your GitHub repository.
+4. Set **Root Directory** to `web`.
+5. Add the **Environment Variables** in the **Env** tab.
+6. Click **Deploy**! 🐳
+
 ## 📝 Project Structure
 - `/src/app`: Routing and page components.
 - `/src/app/admin`: Admin dashboard logic.
