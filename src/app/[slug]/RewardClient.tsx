@@ -27,17 +27,19 @@ type CustomPage = {
 
 export function RewardClient({ 
   pageData,
-  recentDonations
+  recentDonations,
+  initialUnlocked = false
 }: { 
   pageData: CustomPage,
-  recentDonations: Donation[]
+  recentDonations: Donation[],
+  initialUnlocked?: boolean
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(initialUnlocked)
   const [amount, setAmount] = useState<number | ''>('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const [unlocked, setUnlocked] = useState(false)
+  const [unlocked, setUnlocked] = useState(initialUnlocked)
   const [payment, setPayment] = useState<{
     id: string;
     qr_url: string;
@@ -69,6 +71,17 @@ export function RewardClient({
       alert("Gagal mengirim dukungan: " + res.error)
     }
   }
+
+  // Trigger confetti on initial unlocked load
+  useEffect(() => {
+    if (initialUnlocked) {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 }
+      })
+    }
+  }, [initialUnlocked])
 
   // Monitor payment status with Supabase Realtime
   useEffect(() => {
@@ -160,8 +173,17 @@ export function RewardClient({
       <section className="flex flex-col items-center space-y-6 w-full max-w-md">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger className="w-full py-5 bg-primary text-on-primary font-heading text-xl font-bold rounded-2xl shadow-xl hover:bg-primary-container transition-all active:scale-95 group flex items-center justify-center gap-3">
-            Traktir & Buka Reward
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            {unlocked ? (
+              <>
+                Terima Kasih, Lihat Reward
+                <ShieldCheck className="w-6 h-6" />
+              </>
+            ) : (
+              <>
+                Traktir & Buka Reward
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </DialogTrigger>
 
           <DialogContent className="max-w-[440px] p-0 bg-surface-container-lowest border-none shadow-2xl rounded-2xl overflow-y-auto max-h-[95vh]">

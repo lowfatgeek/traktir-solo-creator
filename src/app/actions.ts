@@ -133,6 +133,21 @@ export async function getRecentDonations(limit = 10) {
   return data
 }
 
+export async function getDonationStatusByReference(reference: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('donations')
+    .select('status')
+    .eq('reference', reference)
+    .single()
+
+  if (error) {
+    console.error('Error fetching donation status:', error)
+    return null
+  }
+  return data?.status
+}
+
 // === Custom Pages ===
 
 export async function getCustomPages() {
