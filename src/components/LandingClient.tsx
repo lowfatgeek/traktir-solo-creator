@@ -142,7 +142,7 @@ export function LandingClient({
         </div>
 
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary mb-4 font-heading">
-          Traktir KelasWFA
+          Yuk Traktir
         </h1>
         
         <p className="text-on-surface-variant text-lg max-w-lg mb-10 leading-relaxed min-h-[3.5em] flex items-center justify-center">
@@ -162,7 +162,7 @@ export function LandingClient({
 
         <div className="w-full">
           <DonationModal />
-          <p className="mt-4 text-sm text-on-surface-variant/70">Mulai dari Rp 5.000,- saja via QRIS</p>
+          <p className="mt-4 text-sm text-on-surface-variant/70">Traktir KelasWFA mulai Rp 5.000,- via QRIS</p>
         </div>
       </section>
 
