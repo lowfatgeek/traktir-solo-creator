@@ -206,7 +206,7 @@ export function RewardClient({
       <section className="flex flex-col items-center text-center space-y-8">
         <div className="relative">
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-[0_4px_20px_rgba(15,23,42,0.04)] overflow-hidden">
-            <img alt="Creator Profile" className="w-full h-full object-cover" src="https://r2.kelaswfa.my.id/img/avatar-kelaswfa-1024.jpg" />
+            <img alt="Creator Profile" className="w-full h-full object-cover" src="https://r2.kelaswfa.my.id/img/logo-yuktraktir.png" />
           </div>
         </div>
         

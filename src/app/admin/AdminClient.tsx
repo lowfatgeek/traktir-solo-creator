@@ -252,7 +252,7 @@ export function AdminClient({
               />
             </div>
             <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center bg-primary text-white font-bold text-sm">
-              <img src="https://r2.kelaswfa.my.id/img/avatar-kelaswfa-1024.jpg" className="w-full h-full object-cover" alt="Admin" />
+              <img src="https://r2.kelaswfa.my.id/img/logo-yuktraktir.png" className="w-full h-full object-cover" alt="Admin" />
             </div>
           </div>
         </header>

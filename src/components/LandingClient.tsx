@@ -133,7 +133,7 @@ export function LandingClient({
         <div className="relative mb-8">
           <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-secondary to-tertiary-fixed-dim">
             <div className="w-full h-full rounded-full border-4 border-surface overflow-hidden">
-              <img alt="Creator Profile" className="w-full h-full object-cover" src="https://r2.kelaswfa.my.id/img/avatar-kelaswfa-1024.jpg"/>
+              <img alt="Creator Profile" className="w-full h-full object-cover" src="https://r2.kelaswfa.my.id/img/logo-yuktraktir.png"/>
             </div>
           </div>
           <div className="absolute -bottom-2 -right-2 bg-white/0 rounded-full flex items-center justify-center p-0.5">

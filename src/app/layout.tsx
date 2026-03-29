@@ -9,16 +9,16 @@ export const metadata = {
   description: "Dukung KelasWFA untuk terus berkarya di dunia kerja remote.",
   icons: {
     icon: [
-      { url: 'https://r2.kelaswfa.my.id/img/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: 'https://r2.kelaswfa.my.id/img/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: 'https://r2.kelaswfa.my.id/img/favicon.ico' },
+      { url: 'https://r2.kelaswfa.my.id/img/icon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: 'https://r2.kelaswfa.my.id/img/icon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: 'https://r2.kelaswfa.my.id/img/icon/favicon.ico' },
     ],
     apple: [
-      { url: 'https://r2.kelaswfa.my.id/img/apple-touch-icon.png' },
+      { url: 'https://r2.kelaswfa.my.id/img/icon/apple-touch-icon.png' },
     ],
     other: [
-      { rel: 'android-chrome-192x192', url: 'https://r2.kelaswfa.my.id/img/android-chrome-192x192.png' },
-      { rel: 'android-chrome-512x512', url: 'https://r2.kelaswfa.my.id/img/android-chrome-512x512.png' },
+      { rel: 'android-chrome-192x192', url: 'https://r2.kelaswfa.my.id/img/icon/android-chrome-192x192.png' },
+      { rel: 'android-chrome-512x512', url: 'https://r2.kelaswfa.my.id/img/icon/android-chrome-512x512.png' },
     ]
   }
 };
