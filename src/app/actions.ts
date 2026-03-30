@@ -43,7 +43,7 @@ export async function submitDonation(data: { name: string; amount: number; messa
       merchant_ref: merchantRef,
       amount: data.amount,
       customer_name: data.name || 'Anonim',
-      customer_email: 'customer@example.com',
+      customer_email: 'arsip@yuktraktir.com',
       return_url: data.returnUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://traktir.kelaswfa.my.id',
       order_items: [
         {
