@@ -34,16 +34,16 @@ async function createClient() {
 
 export async function submitDonation(data: { name: string; amount: number; message: string; returnUrl?: string }) {
   const supabase = await createClient()
-  
+
   const merchantRef = `TRK-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-  
+
   try {
     const tripayResponse = await createTriPayTransaction({
-      method: 'QRIS',
+      method: 'QRIS2',
       merchant_ref: merchantRef,
       amount: data.amount,
       customer_name: data.name || 'Anonim',
-      customer_email: 'customer@example.com', 
+      customer_email: 'customer@example.com',
       return_url: data.returnUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://traktir.kelaswfa.my.id',
       order_items: [
         {
@@ -73,13 +73,13 @@ export async function submitDonation(data: { name: string; amount: number; messa
       return { success: false, error: error.message }
     }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       payment: {
         id: donation.id,
         checkout_url: tripayResponse.checkout_url,
         merchant_ref: merchantRef,
-      } 
+      }
     }
   } catch (error: any) {
     console.error('TriPay Error:', error);
@@ -89,13 +89,13 @@ export async function submitDonation(data: { name: string; amount: number; messa
 
 export async function getDonationStats() {
   const supabase = await createClient()
-  
+
   // Get total count
   const { count, error: countError } = await supabase
     .from('donations')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'PAID')
-    
+
   if (countError) {
     console.error('Error fetching donation count:', countError)
     return { count: 0, totalAmount: 0 }
@@ -181,7 +181,7 @@ export async function getCustomPageBySlug(slug: string) {
 
 export async function createCustomPage(data: { slug: string; title: string; reward_url: string; reward_image_url?: string }) {
   const supabase = await createClient()
-  
+
   // Verify Admin first
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.email !== process.env.ADMIN_EMAIL) {
@@ -206,7 +206,7 @@ export async function createCustomPage(data: { slug: string; title: string; rewa
 
 export async function updateCustomPage(id: string, data: { slug: string; title: string; reward_url: string; reward_image_url?: string }) {
   const supabase = await createClient()
-  
+
   // Verify Admin first
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.email !== process.env.ADMIN_EMAIL) {
@@ -232,7 +232,7 @@ export async function updateCustomPage(id: string, data: { slug: string; title: 
 
 export async function deleteCustomPage(id: string) {
   const supabase = await createClient()
-  
+
   // Verify Admin first
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.email !== process.env.ADMIN_EMAIL) {
