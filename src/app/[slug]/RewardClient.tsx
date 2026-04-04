@@ -353,7 +353,7 @@ export function RewardClient({
 
         <p className="text-sm text-on-surface-variant font-medium flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-tertiary-fixed-dim" />
-          Pembayaran aman & terverifikasi
+          Traktiran Aman Mulai Rp. 5.000
         </p>
       </section>
 
