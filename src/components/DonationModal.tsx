@@ -16,8 +16,8 @@ export function DonationModal() {
   const presetAmounts = [5000, 10000, 25000, 50000]
 
   const handleDonate = async () => {
-    if (!amount || amount < 1000) {
-      alert("Minimum donasi adalah Rp 1.000")
+    if (!amount || amount < 5000) {
+      alert("Minimum donasi adalah Rp 5.000")
       return
     }
 
@@ -104,7 +104,7 @@ export function DonationModal() {
                 className="w-full bg-surface-container-low border-2 border-transparent rounded-xl pl-12 pr-4 py-3 text-on-surface focus:ring-0 focus:outline-none focus:border-secondary/30 focus:bg-white transition-all placeholder:text-on-primary-container/50 font-bold text-sm" 
                 placeholder="Custom Amount" 
                 type="number"
-                min="1000"
+                min="5000"
               />
             </div>
           </div>

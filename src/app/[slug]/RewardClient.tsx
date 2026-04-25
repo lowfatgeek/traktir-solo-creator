@@ -51,8 +51,8 @@ export function RewardClient({
   const presetAmounts = [5000, 10000, 25000, 50000]
 
   const handleDonate = async () => {
-    if (!amount || amount < 1000) {
-      alert("Minimum donasi adalah Rp 1.000")
+    if (!amount || amount < 5000) {
+      alert("Minimum donasi adalah Rp 5.000")
       return
     }
 
@@ -331,7 +331,7 @@ export function RewardClient({
                       <input 
                         value={amount} onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : '')}
                         className="w-full bg-surface-container-low border-2 border-transparent rounded-xl pl-12 pr-4 py-2.5 focus:outline-none focus:ring-0 focus:border-secondary/30 transition-all font-bold text-sm" 
-                        placeholder="Custom Amount" type="number" min="1000"
+                        placeholder="Custom Amount" type="number" min="5000"
                       />
                     </div>
                   </div>
