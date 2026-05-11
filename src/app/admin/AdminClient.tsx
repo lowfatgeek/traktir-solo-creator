@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createCustomPage, deleteCustomPage, updateCustomPage } from '@/app/actions'
+import { createCustomPage, deleteCustomPage, updateCustomPage, getEmailConfigAction, saveEmailConfigAction, sendTestEmailAction } from '@/app/actions'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { LayoutDashboard, Receipt, FileEdit, Users, BarChart3, Settings, HelpCircle, LogOut, Search, Bell, TrendingUp, Heart, UploadCloud, ArrowRight, Trash2, Loader2, X, Plus } from 'lucide-react'
+import { LayoutDashboard, Receipt, FileEdit, Users, BarChart3, Settings, HelpCircle, LogOut, Search, Bell, TrendingUp, Heart, UploadCloud, ArrowRight, Trash2, Loader2, X, Plus, Mail, Send, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react'
 
 type Donation = {
   id: string
@@ -32,7 +32,7 @@ export function AdminClient({
   recentDonations: Donation[],
   customPages: CustomPage[]
 }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'donations' | 'pages'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'donations' | 'pages' | 'config'>('overview')
   const [stats, setStats] = useState(initialStats)
   const [donations, setDonations] = useState(initialDonations)
   const [pages, setPages] = useState(customPages)
@@ -44,6 +44,17 @@ export function AdminClient({
   const [loading, setLoading] = useState(false)
   const [successPage, setSuccessPage] = useState<{ slug: string, title: string } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Email Config state
+  const [emailConfigId, setEmailConfigId] = useState<string | null>(null)
+  const [emailSubject, setEmailSubject] = useState('')
+  const [emailBody, setEmailBody] = useState('')
+  const [emailConfigLoading, setEmailConfigLoading] = useState(false)
+  const [emailConfigSaved, setEmailConfigSaved] = useState(false)
+  const [testEmailTo, setTestEmailTo] = useState('')
+  const [testEmailLoading, setTestEmailLoading] = useState(false)
+  const [testEmailResult, setTestEmailResult] = useState<{ success: boolean; message?: string } | null>(null)
+
   const router = useRouter()
 
   useEffect(() => {
@@ -70,6 +81,21 @@ export function AdminClient({
       return () => clearTimeout(timer)
     }
   }, [successPage])
+
+  // Load email config when Config tab is opened
+  useEffect(() => {
+    if (activeTab === 'config' && !emailSubject) {
+      setEmailConfigLoading(true)
+      getEmailConfigAction().then((res) => {
+        if (res.success && res.config) {
+          setEmailConfigId(res.config.id)
+          setEmailSubject(res.config.subject)
+          setEmailBody(res.config.body)
+        }
+        setEmailConfigLoading(false)
+      })
+    }
+  }, [activeTab])
 
   const handleEditClick = (page: CustomPage) => {
     setEditingId(page.id)
@@ -131,6 +157,34 @@ export function AdminClient({
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/login')
+  }
+
+  const handleSaveEmailConfig = async () => {
+    if (!emailSubject.trim() || !emailBody.trim()) {
+      alert('Subject dan body template tidak boleh kosong!')
+      return
+    }
+    setEmailConfigLoading(true)
+    const res = await saveEmailConfigAction({ id: emailConfigId, subject: emailSubject, body: emailBody })
+    setEmailConfigLoading(false)
+    if (res.success) {
+      setEmailConfigSaved(true)
+      setTimeout(() => setEmailConfigSaved(false), 3000)
+    } else {
+      alert('Gagal menyimpan: ' + res.error)
+    }
+  }
+
+  const handleTestEmail = async () => {
+    if (!testEmailTo || !testEmailTo.includes('@')) {
+      alert('Masukkan alamat email yang valid!')
+      return
+    }
+    setTestEmailLoading(true)
+    setTestEmailResult(null)
+    const res = await sendTestEmailAction(testEmailTo)
+    setTestEmailLoading(false)
+    setTestEmailResult({ success: res.success, message: res.success ? 'Email test berhasil dikirim! Cek inbox kamu.' : (res.error || 'Gagal mengirim email.') })
   }
 
   const copyToClipboard = (text: string) => {
@@ -219,6 +273,13 @@ export function AdminClient({
             <FileEdit className="w-5 h-5" />
             Reward Pages
           </button>
+          <button 
+            onClick={() => setActiveTab('config')} 
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-bold text-sm ${activeTab === 'config' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-primary hover:bg-white/50'}`}
+          >
+            <Settings className="w-5 h-5" />
+            Config
+          </button>
         </nav>
 
         <div className="mt-auto flex flex-col gap-2">
@@ -236,7 +297,7 @@ export function AdminClient({
         <header className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-3xl font-extrabold text-primary tracking-tight font-heading capitalize">
-              {activeTab === 'overview' ? 'Overview Dashboard' : activeTab === 'donations' ? 'Donations List' : 'Reward Pages'}
+              {activeTab === 'overview' ? 'Overview Dashboard' : activeTab === 'donations' ? 'Donations List' : activeTab === 'pages' ? 'Reward Pages' : 'Config'}
             </h2>
             <p className="text-on-surface-variant mt-1 font-medium">Welcome back, Administrator.</p>
           </div>
@@ -488,6 +549,125 @@ export function AdminClient({
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingId ? <ArrowRight className="w-5 h-5" /> : <Plus className="w-5 h-5" />)}
                     {editingId ? 'Update Page' : 'Generate Page'}
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Config Tab */}
+        {activeTab === 'config' && (
+          <div className="animate-in fade-in duration-500 max-w-3xl space-y-10">
+            
+            {/* Test Email Section */}
+            <div className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm border border-outline-variant/10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-secondary">
+                  <Send className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-primary text-lg">Test Kirim Email</h4>
+                  <p className="text-on-surface-variant text-sm">Verifikasi konfigurasi SMTP kamu dengan mengirim email percobaan.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <input
+                  type="email"
+                  value={testEmailTo}
+                  onChange={(e) => setTestEmailTo(e.target.value)}
+                  placeholder="Masukkan email tujuan..."
+                  className="flex-1 bg-surface-container-low border-2 border-transparent rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-secondary/30 transition-all"
+                />
+                <button
+                  onClick={handleTestEmail}
+                  disabled={testEmailLoading}
+                  className="px-6 py-3 bg-secondary text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {testEmailLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  Kirim Test
+                </button>
+              </div>
+
+              {testEmailResult && (
+                <div className={`mt-4 flex items-start gap-3 p-4 rounded-xl text-sm font-medium ${
+                  testEmailResult.success
+                    ? 'bg-secondary-container/50 text-secondary'
+                    : 'bg-error/10 text-error'
+                }`}>
+                  {testEmailResult.success
+                    ? <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                    : <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />}
+                  <span>{testEmailResult.message}</span>
+                </div>
+              )}
+
+              <div className="mt-6 p-4 bg-surface-container-low rounded-2xl">
+                <p className="text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-wider mb-3">Variabel SMTP yang diperlukan di .env</p>
+                <div className="space-y-1.5">
+                  {['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'].map(v => (
+                    <div key={v} className="flex items-center gap-2">
+                      <code className="text-xs font-mono bg-surface-container rounded px-2 py-0.5 text-primary">{v}</code>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Email Template Section */}
+            <div className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm border border-outline-variant/10">
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-primary text-lg">Template Email Reward</h4>
+                    <p className="text-on-surface-variant text-sm">Kustomisasi konten email yang dikirim ke donatur.</p>
+                  </div>
+                </div>
+                {emailConfigLoading && <Loader2 className="w-5 h-5 animate-spin text-outline" />}
+              </div>
+
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-on-surface-variant/80 uppercase tracking-wider">Subject Email</label>
+                  <input
+                    type="text"
+                    value={emailSubject}
+                    onChange={(e) => setEmailSubject(e.target.value)}
+                    className="w-full bg-surface-container-low border-2 border-transparent rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-secondary/30 transition-all"
+                    placeholder="Subject email..."
+                  />
+                  <p className="text-[11px] text-on-surface-variant/60 font-medium">Variabel yang tersedia: <code className="bg-surface-container rounded px-1">{'{{donor_name}}'}</code> <code className="bg-surface-container rounded px-1">{'{{page_title}}'}</code> <code className="bg-surface-container rounded px-1">{'{{reward_url}}'}</code></p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-on-surface-variant/80 uppercase tracking-wider">Body Email (HTML)</label>
+                  <textarea
+                    value={emailBody}
+                    onChange={(e) => setEmailBody(e.target.value)}
+                    rows={16}
+                    className="w-full bg-surface-container-low border-2 border-transparent rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-secondary/30 transition-all resize-y"
+                    placeholder="<html>...</html>"
+                  />
+                  <p className="text-[11px] text-on-surface-variant/60 font-medium">Variabel yang sama berlaku di body email.</p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSaveEmailConfig}
+                    disabled={emailConfigLoading}
+                    className="px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all disabled:opacity-60 shadow-lg shadow-primary/20"
+                  >
+                    {emailConfigLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    Simpan Template
+                  </button>
+                  {emailConfigSaved && (
+                    <span className="flex items-center gap-1.5 text-secondary text-sm font-bold animate-in fade-in duration-300">
+                      <CheckCircle className="w-4 h-4" /> Tersimpan!
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

@@ -32,7 +32,7 @@ async function createClient() {
 
 // === Donations ===
 
-export async function submitDonation(data: { name: string; amount: number; message: string; returnUrl?: string }) {
+export async function submitDonation(data: { name: string; amount: number; message: string; returnUrl?: string; donor_email?: string }) {
   const supabase = await createClient()
 
   const merchantRef = `TRK-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
@@ -59,6 +59,7 @@ export async function submitDonation(data: { name: string; amount: number; messa
         name: data.name || 'Anonim',
         amount: data.amount,
         message: data.message,
+        donor_email: data.donor_email || null,
         merchant_ref: merchantRef,
         reference: tripayResponse.reference,
         payment_method: 'QRIS',
@@ -246,4 +247,62 @@ export async function deleteCustomPage(id: string) {
     return { success: false, error: error.message }
   }
   return { success: true }
+}
+
+// === Email Config ===
+
+export async function getEmailConfigAction() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('email_config')
+    .select('id, subject, body')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error || !data) {
+    // Return defaults
+    const { DEFAULT_EMAIL_SUBJECT, DEFAULT_EMAIL_BODY } = await import('@/lib/email')
+    return { success: true, config: { id: null, subject: DEFAULT_EMAIL_SUBJECT, body: DEFAULT_EMAIL_BODY } }
+  }
+  return { success: true, config: data }
+}
+
+export async function saveEmailConfigAction(data: { id?: string | null; subject: string; body: string }) {
+  const supabase = await createClient()
+
+  // Verify Admin first
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || user.email !== process.env.ADMIN_EMAIL) {
+    return { success: false, error: 'Unauthorized' }
+  }
+
+  if (data.id) {
+    const { error } = await supabase
+      .from('email_config')
+      .update({ subject: data.subject, body: data.body })
+      .eq('id', data.id)
+    if (error) return { success: false, error: error.message }
+  } else {
+    const { error } = await supabase
+      .from('email_config')
+      .insert([{ subject: data.subject, body: data.body }])
+    if (error) return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
+
+export async function sendTestEmailAction(toEmail: string) {
+  const supabase = await createClient()
+
+  // Verify Admin first
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || user.email !== process.env.ADMIN_EMAIL) {
+    return { success: false, error: 'Unauthorized' }
+  }
+
+  const { testSmtpConnection } = await import('@/lib/email')
+  return await testSmtpConnection(toEmail)
 }

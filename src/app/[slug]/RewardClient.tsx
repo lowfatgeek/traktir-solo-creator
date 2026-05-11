@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { submitDonation } from '@/app/actions'
-import { Coffee, ArrowRight, ShieldCheck, Loader2, Download, User, Star } from 'lucide-react'
+import { Coffee, ArrowRight, ShieldCheck, Loader2, Download, User, Star, Mail } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import confetti from 'canvas-confetti'
 import { supabase } from '@/lib/supabase'
@@ -37,9 +37,11 @@ export function RewardClient({
   const [open, setOpen] = useState(initialUnlocked)
   const [amount, setAmount] = useState<number | ''>('')
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [unlocked, setUnlocked] = useState(initialUnlocked)
+  const [emailSent, setEmailSent] = useState(false)
   const [payment, setPayment] = useState<{
     id: string;
     qr_url: string;
@@ -61,7 +63,8 @@ export function RewardClient({
       name, 
       amount: Number(amount), 
       message: `${message} (Reward: ${pageData.title})`,
-      returnUrl: window.location.href
+      returnUrl: window.location.href,
+      donor_email: email.trim() || undefined,
     })
     setLoading(false)
 
@@ -106,6 +109,8 @@ export function RewardClient({
             })
             setUnlocked(true)
             setPayment(null)
+            // Show email sent badge if donor had entered their email
+            if (email.trim()) setEmailSent(true)
           }
         }
       )
@@ -153,6 +158,13 @@ export function RewardClient({
              <p className="text-on-surface-variant max-w-xl mx-auto text-lg leading-relaxed font-medium">
                  Atas traktiran <span className="font-bold text-primary">caffeine boost</span> ekstra untuk terus mendukung saya tetap berkarya.
              </p>
+             {/* Email sent notification */}
+             {(emailSent || (initialUnlocked)) && email.trim() && (
+               <div className="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-secondary-container text-secondary rounded-2xl text-sm font-bold shadow-sm">
+                 <Mail className="w-4 h-4" />
+                 Link reward telah dikirim ke <span className="underline underline-offset-2">{email}</span>
+               </div>
+             )}
            </div>
            
            <div className="relative group mb-16 max-w-4xl mx-auto w-full">
@@ -295,6 +307,19 @@ export function RewardClient({
                       value={name} onChange={(e) => setName(e.target.value)}
                       className="w-full bg-surface-container-low border-2 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-0 focus:border-secondary/30 transition-all font-medium text-sm" 
                       placeholder="Nama (Opsional)" type="text"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold text-on-surface-variant/80 uppercase tracking-wider px-1 flex items-center gap-1.5">
+                      <Mail className="w-3 h-3" />
+                      Email
+                      <span className="text-[9px] font-medium opacity-60 normal-case tracking-normal">(Opsional — reward dikirim ke email)</span>
+                    </label>
+                    <input 
+                      value={email} onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-surface-container-low border-2 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-0 focus:border-secondary/30 transition-all font-medium text-sm" 
+                      placeholder="email@kamu.com" type="email"
                     />
                   </div>
 
