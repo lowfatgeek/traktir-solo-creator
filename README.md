@@ -33,6 +33,16 @@ Create a `.env.local` file in the root directory and add the following:
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ADMIN_EMAIL=your_admin_email_address
+
+# Supabase Admin
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# SMTP Email Config
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your@email.com
+SMTP_PASS=your_app_password
+SMTP_FROM="YukTraktir <noreply@yuktraktir.com>"
 ```
 
 ### 3. Database Setup
@@ -67,6 +77,12 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
    NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxx
    ADMIN_EMAIL=admin@example.com
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your@email.com
+   SMTP_PASS=your_app_password
+   SMTP_FROM=YukTraktir <noreply@yuktraktir.com>
    ```
 7. Set the **Destination Port** to `3000` (or `80` if mapped by EasyPanel).
 8. Klik **Deploy**! 🐳
